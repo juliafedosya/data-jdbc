@@ -8,8 +8,10 @@ public class Bill {
 
     @Id
     private Long id;
-    private Long amount;
-    private String patientName;
-    private String doctorName;
 
+    private Long amount;
+
+    private String patientName;
+
+    private String doctorName;
 }

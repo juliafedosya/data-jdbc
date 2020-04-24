@@ -24,14 +24,19 @@ create table  patient_diagnosis (
 id integer identity primary key,
 details varchar(150),
 remarks varchar(100),
-date_confirmed varchar(150),
-patient integer references patient(id));
+date_confirmed date,
+patient integer references patient(id),
+patient_key integer );
 
 create table  bill (
 id integer identity primary key,
+amount integer,
 patient_name varchar(30),
 doctor_name varchar(30),
-patient integer references patient(id));
+patient integer references patient(id),
+patient_key integer );
+
+
 
 
 

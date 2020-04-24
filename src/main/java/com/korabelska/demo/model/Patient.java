@@ -41,7 +41,7 @@ public class Patient {
         }
         this.patientDiagnoses.add(patientDiagnosis);
     }
-    public void addPatientDiagnosis(Bill bill) {
+    public void addBill(Bill bill) {
         if(this.bills == null){
             bills = new HashSet<>();
         }

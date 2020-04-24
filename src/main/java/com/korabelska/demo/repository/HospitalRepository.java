@@ -7,6 +7,7 @@ import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface HospitalRepository extends CrudRepository<Hospital, Long> {
 
@@ -14,5 +15,8 @@ public interface HospitalRepository extends CrudRepository<Hospital, Long> {
             "FROM department where hospital=:id")
     List<Department> findDepartmentsByHospitalId(@Param("id") Long id);
 
-
+    @Query("SELECT id, name " +
+            "FROM department where hospital=:id and id")
+    Optional<Department> findDepartmentByIdAndHospitalId(@Param("h_id") Long hospitalId,
+                                                         @Param("d_id") Long departmentId);
 }

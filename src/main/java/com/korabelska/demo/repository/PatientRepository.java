@@ -21,5 +21,8 @@ public interface PatientRepository extends CrudRepository<Patient, Long> {
     @Modifying
     @Query("update patient set doctor = :d_id where id = :p_id")
     boolean updateDoctor(@Param("d_id") Long doctorId,@Param("p_id") Long patientId);
+
+    @Query("select patient_key from patient_diagnosis where patient = :p_id")
+    List<Long> findPatientDiagnosisKeysByPatientId(@Param("p_id")Long patientId);
 }
 
