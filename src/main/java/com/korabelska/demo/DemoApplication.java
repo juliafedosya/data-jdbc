@@ -3,6 +3,7 @@ package com.korabelska.demo;
 import com.korabelska.demo.model.Doctor;
 import com.korabelska.demo.model.Patient;
 import com.korabelska.demo.repository.DoctorRepository;
+import com.korabelska.demo.repository.PatientRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.SpringApplication;
@@ -22,7 +23,7 @@ public class DemoApplication {
 	}
 
 	@Bean
-	ApplicationRunner applicationRunner(DoctorRepository doctorRepository) {
+	ApplicationRunner applicationRunner(DoctorRepository doctorRepository, PatientRepository patientRepository) {
 		return args -> {
 			Set<Patient> patients = new HashSet<>();
 			Patient patient1 = Patient.create("Yen", LocalDate.of(2000,4,4));
@@ -36,10 +37,10 @@ public class DemoApplication {
 			Doctor doctor1 = Doctor.create("Julia",LocalDate.of(1990,3,4),patients1);
 			doctorRepository.save(doctor);
 			doctorRepository.save(doctor1);
-
 			log.info("{}",doctorRepository.findByName(doctor.getFirstName()));
 			log.info("{}",doctorRepository.findPatientsByFirstName(doctor.getFirstName()));
 			log.info("{}",doctorRepository.findPatientsByFirstName(doctor1.getFirstName()));
+			patientRepository.updateDoctor(doctor.getId(),patient1.getId());
 
 		};
 	}

@@ -1,3 +1,13 @@
+create table hospital (
+id integer identity primary key,
+name varchar(50),
+address varchar(100));
+
+create table department (
+id integer identity primary key,
+name varchar(30),
+hospital integer references hospital(id));
+
 create table doctor(
 id integer identity primary key,
 first_name varchar(30),
@@ -9,16 +19,6 @@ id integer identity primary key,
 first_name varchar(30),
 date_of_birth date,
 doctor integer references doctor(id));
-
-create table department (
-id integer identity primary key,
-name varchar(30),
-hospital integer references hospital(id));
-
-create table hospital (
-id integer identity primary key,
-name varchar(50),
-address varchar(100));
 
 create table  patient_diagnosis (
 id integer identity primary key,
