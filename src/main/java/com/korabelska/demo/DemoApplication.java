@@ -1,6 +1,5 @@
 package com.korabelska.demo;
 
-import com.korabelska.demo.model.Address;
 import com.korabelska.demo.model.Doctor;
 import com.korabelska.demo.model.Patient;
 import com.korabelska.demo.repository.DoctorRepository;

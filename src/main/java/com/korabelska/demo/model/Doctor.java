@@ -12,10 +12,10 @@ import java.util.Set;
 public class Doctor {
 
     @Id
-    Long id;
-    String firstName;
-    LocalDate dateOfBirth;
-    Set<Patient> patients;
+    private Long id;
+    private String firstName;
+    private LocalDate dateOfBirth;
+    private Set<Patient> patients;
 
     public static Doctor create(String firstName, LocalDate dateOfBirth, Set<Patient> patients) {
         return new Doctor(null,firstName, dateOfBirth,patients);

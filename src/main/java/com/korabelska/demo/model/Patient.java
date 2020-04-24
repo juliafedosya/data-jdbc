@@ -6,6 +6,8 @@ import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 @Data
@@ -13,15 +15,25 @@ import java.util.Set;
 public class Patient {
 
     @Id
-    Long id;
-    String firstName;
-    LocalDate dateOfBirth;
+    private Long id;
+    private String firstName;
+    private LocalDate dateOfBirth;
+    private List<PatientDiagnosis> patientDiagnoses;
 
     public static Patient create(String firstName, LocalDate dateOfBirth) {
-        return new Patient(null, firstName,dateOfBirth);
+        return new Patient(null, firstName, dateOfBirth, null);
     }
 
+    public static Patient create(String firstName, LocalDate dateOfBirth, List<PatientDiagnosis> patientDiagnoses) {
+        return new Patient(null, firstName, dateOfBirth, patientDiagnoses);
+    }
 
+    public void addPatientDiagnosis(PatientDiagnosis patientDiagnosis) {
+        if(this.patientDiagnoses == null){
+            patientDiagnoses = new ArrayList<>();
+        }
+        this.patientDiagnoses.add(patientDiagnosis);
+    }
 
 
 }
