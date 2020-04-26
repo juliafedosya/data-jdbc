@@ -24,4 +24,8 @@ public class Department {
         return department;
     }
 
+    public void addDoctor(Doctor doctor) {
+        doctors.add(doctor);
+    }
+
 }

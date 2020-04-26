@@ -49,8 +49,9 @@ public class DemoApplication {
             Hospital hospital = Hospital.create("Saint Ann",
 					"22 Boulevard, New Jersey", departments);
             hospitalRepository.save(hospital);
-//            doctorRepository.save(doctor);
-//            doctorRepository.save(doctor1);
+            log.info("{}",hospital);
+            doctorRepository.save(doctor);
+            doctorRepository.save(doctor1);
 //            log.info("{}", doctorRepository.findByName(doctor.getFirstName()));
 //            log.info("{}", doctorRepository.findPatientsByFirstName(doctor.getFirstName()));
 //            log.info("{}", doctorRepository.findPatientsByFirstName(doctor1.getFirstName()));
