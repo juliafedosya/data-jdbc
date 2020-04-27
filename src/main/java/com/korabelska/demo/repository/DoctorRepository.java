@@ -24,5 +24,9 @@ public interface DoctorRepository extends CrudRepository<Doctor, Long> {
     @Query("update patient set doctor=:d_id where id=:p_id")
     Boolean addPatientToDoctor(@Param("p_id") Long patientId,@Param("d_id") Long doctorId);
 
+    @Modifying
+    @Query("update doctor set department=:d_id where id=:id")
+    Boolean changeDepartment(@Param("d_id") Long departmentId,@Param("id") Long doctorId);
+
 
 }
