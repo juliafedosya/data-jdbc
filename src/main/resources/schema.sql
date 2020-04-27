@@ -34,7 +34,7 @@ amount integer,
 patient_name varchar(30),
 doctor_name varchar(30),
 patient integer references patient(id),
-patient_key integer );
+patient_key integer);
 
 
 

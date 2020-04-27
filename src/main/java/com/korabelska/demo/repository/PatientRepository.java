@@ -1,12 +1,15 @@
 package com.korabelska.demo.repository;
 
+import com.korabelska.demo.model.Doctor;
 import com.korabelska.demo.model.Patient;
+import com.korabelska.demo.model.PatientDiagnosis;
 import org.springframework.data.jdbc.repository.query.Modifying;
 import org.springframework.data.jdbc.repository.query.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
+import java.util.Optional;
 
 
 public interface PatientRepository extends CrudRepository<Patient, Long> {
@@ -22,7 +25,16 @@ public interface PatientRepository extends CrudRepository<Patient, Long> {
     @Query("update patient set doctor = :d_id where id = :p_id")
     boolean updateDoctor(@Param("d_id") Long doctorId,@Param("p_id") Long patientId);
 
-    @Query("select patient_key from patient_diagnosis where patient = :p_id")
-    List<Long> findPatientDiagnosisKeysByPatientId(@Param("p_id")Long patientId);
+    @Query("select doctor.first_name from patient inner join doctor on patient.doctor=doctor.id  where patient.id=:p_id")
+    String findDoctorNameByPatientId(@Param("p_id") Long patientId);
+
+    @Query("select * from patient_diagnosis where patient = :p_id")
+    List<PatientDiagnosis> findPatientDiagnosesByPatientId(@Param("p_id")Long patientId);
+
+    @Query("select * from patient_diagnosis where patient=:p_id and id=:pd_id")
+    Optional<PatientDiagnosis> findPatientDiagnosisByIdAndByPatientId(@Param("pd_id") Long patientDiagnosisId,
+                                                                     @Param("p_id")Long patientId);
+
+
 }
 

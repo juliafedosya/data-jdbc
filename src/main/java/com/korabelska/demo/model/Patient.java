@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.relational.core.mapping.MappedCollection;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -20,7 +21,11 @@ public class Patient {
     private Long id;
     private String firstName;
     private LocalDate dateOfBirth;
+
+    @MappedCollection
     private List<PatientDiagnosis> patientDiagnoses;
+
+    @MappedCollection
     private Set<Bill>bills;
 
     public static Patient create(String firstName, LocalDate dateOfBirth) {
@@ -43,6 +48,7 @@ public class Patient {
         }
         this.patientDiagnoses.add(patientDiagnosis);
     }
+
     public void addBill(Bill bill) {
         if(this.bills == null){
             bills = new HashSet<>();
