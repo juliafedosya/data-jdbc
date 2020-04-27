@@ -34,7 +34,7 @@ public class DoctorController {
 
     @GetMapping("/{id}")
     public ResponseEntity<Object> getDoctorById(@PathVariable Long id) {
-        Optional<Doctor> doctor = doctorService.getDoctorById(id);
+        Optional<Doctor> doctor = doctorService.findById(id);
         boolean isPresent = doctor.isPresent();
 
         if (isPresent) {
@@ -55,7 +55,7 @@ public class DoctorController {
                     .findFirst();
 
             if (department.isPresent()) {
-                Doctor doctor = doctorService.createDoctor(doctorDto, department.get(), hospital.get());
+                Doctor doctor = doctorService.create(doctorDto, department.get(), hospital.get());
                 return ResponseEntity.ok(doctor);
             }
             return ResponseEntity.badRequest().build();
@@ -65,7 +65,7 @@ public class DoctorController {
 
     @PatchMapping("/{id}")
     public ResponseEntity<Object> updateDoctor(@PathVariable Long id, @RequestBody DoctorDto doctorDto) {
-        Optional<Doctor> doctor = doctorService.getDoctorById(id);
+        Optional<Doctor> doctor = doctorService.findById(id);
 
         if (doctor.isPresent()) {
             Long hospitalId = doctorDto.getHospitalId();
@@ -78,7 +78,7 @@ public class DoctorController {
                         .findFirst();
 
                 if (department.isPresent()) {
-                    Doctor updated = doctorService.updateDoctor(doctorDto,
+                    Doctor updated = doctorService.update(doctorDto,
                             doctor.get(), department.get(), hospital.get());
                     return ResponseEntity.ok(updated);
                 }
@@ -91,7 +91,7 @@ public class DoctorController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Object> deleteDoctor(@PathVariable Long id) {
-        doctorService.deleteDoctor(id);
+        doctorService.delete(id);
         return ResponseEntity.ok().build();
     }
 }
