@@ -8,9 +8,7 @@ import org.springframework.data.relational.core.mapping.MappedCollection;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 @Data
 @AllArgsConstructor
@@ -25,21 +23,13 @@ public class Patient {
     @MappedCollection
     private List<PatientDiagnosis> patientDiagnoses;
 
-    @MappedCollection
-    private Set<Bill>bills;
-
     public static Patient create(String firstName, LocalDate dateOfBirth) {
-        return new Patient(null, firstName, dateOfBirth, null,null);
+        return new Patient(null, firstName, dateOfBirth, null);
     }
 
     public static Patient create(String firstName, LocalDate dateOfBirth,
                                  List<PatientDiagnosis> patientDiagnoses) {
-        return new Patient(null, firstName, dateOfBirth, patientDiagnoses,null);
-    }
-
-    public static Patient create(String firstName, LocalDate dateOfBirth,
-                                 List<PatientDiagnosis> patientDiagnoses,Set<Bill> bills) {
-        return new Patient(null, firstName, dateOfBirth, patientDiagnoses,bills);
+        return new Patient(null, firstName, dateOfBirth, patientDiagnoses);
     }
 
     public void addPatientDiagnosis(PatientDiagnosis patientDiagnosis) {
@@ -47,13 +37,6 @@ public class Patient {
             patientDiagnoses = new ArrayList<>();
         }
         this.patientDiagnoses.add(patientDiagnosis);
-    }
-
-    public void addBill(Bill bill) {
-        if(this.bills == null){
-            bills = new HashSet<>();
-        }
-        this.bills.add(bill);
     }
 
 
