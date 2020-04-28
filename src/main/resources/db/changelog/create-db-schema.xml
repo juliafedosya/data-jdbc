@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <changeSet id="01" author="ykora">
+
+        <createTable tableName="hospital"
+                     remarks="A table that describes hospital">
+            <column name="id" type="int" autoIncrement="true">
+                <constraints nullable="false" unique="true" primaryKey="true"/>
+            </column>
+            <column name="name" type="varchar(255)">
+                <constraints nullable="false" unique="false"/>
+            </column>
+            <column name="address" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <createTable tableName="department"
+                     remarks="A table that describes department">
+            <column name="id" type="int" autoIncrement="true">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="name" type="varchar(200)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="hospital" type="int">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <createTable tableName="doctor"
+                     remarks="A table that describes doctor">
+            <column name="id" type="int" autoIncrement="true">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="first_name" type="varchar(200)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="date_of_birth" type="date">
+                <constraints nullable="false"/>
+            </column>
+            <column name="department" type="int">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <createTable tableName="patient"
+                     remarks="A table that describes patient">
+            <column name="id" type="int" autoIncrement="true">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="first_name" type="varchar(200)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="date_of_birth" type="date">
+                <constraints nullable="false"/>
+            </column>
+            <column name="doctor" type="int">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+
+        <createTable tableName="patient_diagnosis"
+                     remarks="A table that describes patient diagnosis">
+            <column name="id" type="int" autoIncrement="true">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="details" type="varchar(300)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="remarks" type="varchar(300)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="date_confirmed" type="date">
+                <constraints nullable="false"/>
+            </column>
+            <column name="patient" type="int">
+                <constraints nullable="false"/>
+            </column>
+            <column name="patient_key" type="int">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addForeignKeyConstraint baseTableName="department" baseColumnNames="hospital"
+                                 constraintName="hospital_fk"
+                                 referencedTableName="hospital" referencedColumnNames="id"/>
+
+        <addForeignKeyConstraint baseTableName="doctor" baseColumnNames="department"
+                                 constraintName="department_fk"
+                                 referencedTableName="department" referencedColumnNames="id"/>
+
+        <addForeignKeyConstraint baseTableName="patient" baseColumnNames="doctor"
+                                 constraintName="doctor_fk"
+                                 referencedTableName="doctor" referencedColumnNames="id"/>
+
+        <addForeignKeyConstraint baseTableName="patient_diagnosis" baseColumnNames="patient"
+                                 constraintName="patient_fk"
+                                 referencedTableName="patient" referencedColumnNames="id"/>
+
+
+    </changeSet>
+</databaseChangeLog>
