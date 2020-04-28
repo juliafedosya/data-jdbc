@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
-import org.springframework.data.relational.core.mapping.MappedCollection;
+
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -15,12 +15,11 @@ import java.util.List;
 @NoArgsConstructor
 public class Patient {
 
-    @Id
+
     private Long id;
     private String firstName;
     private LocalDate dateOfBirth;
 
-    @MappedCollection
     private List<PatientDiagnosis> patientDiagnoses;
 
     public static Patient create(String firstName, LocalDate dateOfBirth) {
