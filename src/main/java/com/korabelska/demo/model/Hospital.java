@@ -29,7 +29,6 @@ public class Hospital {
     @Column(name = "ADDRESS")
     private String address;
 
-    @NotNull
     @Interleaved
     @EqualsAndHashCode.Exclude
     private List<Department> departments;

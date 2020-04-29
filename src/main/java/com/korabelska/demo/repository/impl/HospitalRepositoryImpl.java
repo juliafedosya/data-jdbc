@@ -1,5 +1,6 @@
 package com.korabelska.demo.repository.impl;
 
+import com.korabelska.demo.exceptions.EntityNotFoundException;
 import com.korabelska.demo.model.Hospital;
 import com.korabelska.demo.repository.BaseRepository;
 import org.springframework.cloud.gcp.data.spanner.core.SpannerTemplate;
@@ -26,11 +27,12 @@ public class HospitalRepositoryImpl extends BaseRepository<Hospital,String> {
     }
 
     @Override
-    public Hospital updateExisting(Hospital hospital) {
+    public Hospital updateExisting(Hospital hospital) throws EntityNotFoundException {
         if(spannerTemplate.existsById(Hospital.class,Key.of(hospital.getId()))) {
             spannerTemplate.update(hospital);
+            return hospital;
         }
-        return hospital;
+        throw new EntityNotFoundException(hospital.getId());
     }
 
     @Override

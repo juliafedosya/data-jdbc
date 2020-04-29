@@ -1,5 +1,6 @@
 package com.korabelska.demo.repository;
 
+import com.korabelska.demo.exceptions.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cloud.gcp.data.spanner.core.SpannerTemplate;
 
@@ -13,7 +14,7 @@ public abstract class BaseRepository<T,ID> {
 
     public abstract T create(T t);
 
-    public abstract T updateExisting(T t);
+    public abstract T updateExisting(T t) throws EntityNotFoundException;
 
     public abstract List<T> findAll();
 

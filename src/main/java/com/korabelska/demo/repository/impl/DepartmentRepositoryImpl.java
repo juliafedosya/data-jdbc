@@ -2,6 +2,7 @@ package com.korabelska.demo.repository.impl;
 
 import com.google.cloud.spanner.Key;
 import com.google.cloud.spanner.Statement;
+import com.korabelska.demo.exceptions.EntityNotFoundException;
 import com.korabelska.demo.model.Department;
 import com.korabelska.demo.repository.BaseRepository;
 import org.springframework.cloud.gcp.data.spanner.core.SpannerTemplate;
@@ -63,5 +64,14 @@ public class DepartmentRepositoryImpl extends BaseRepository<Department,String> 
     public List<Department> findByHospitalId(String hospitalId) {
         List<Department> departments = spannerTemplate.query(Department.class, Statement.of("SELECT * FROM DEPARTMENTS WHERE HOSPITAL_ID=\""+hospitalId + "\""),null);
         return departments;
+    }
+
+    public Department findByIdAndHospitalId(String id,String hospitalId) throws EntityNotFoundException {
+        List<Department> departments = spannerTemplate.query(Department.class,
+                Statement.of("SELECT * FROM DEPARTMENTS WHERE HOSPITAL_ID=\"" + hospitalId + "\" AND DEPARTMENT_ID=\"" + id +"\""),null);
+        Optional<Department> optionalDepartment = departments.stream().findFirst();
+
+       return optionalDepartment.orElseThrow(
+               () -> new EntityNotFoundException(id));
     }
 }

@@ -3,31 +3,37 @@ package com.korabelska.demo.model;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.data.annotation.Id;
+import org.springframework.cloud.gcp.data.spanner.core.mapping.Column;
+import org.springframework.cloud.gcp.data.spanner.core.mapping.PrimaryKey;
+import org.springframework.cloud.gcp.data.spanner.core.mapping.Table;
 
 import java.time.LocalDate;
-import java.util.HashSet;
-import java.util.Set;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Table(name = "DOCTORS")
 public class Doctor {
 
-    private Long id;
+    @Column(name = "HOSPITAL_ID")
+    @PrimaryKey
+    private String hospitalId;
 
+    @Column(name = "DEPARTMENT_ID")
+    @PrimaryKey(keyOrder = 2)
+    private String departmentId;
+
+    @Column(name = "DOCTOR_ID")
+    @PrimaryKey(keyOrder = 3)
+    private String doctorId;
+
+    @Column(name = "FIRST_NAME")
     private String firstName;
 
+    @Column(name = "DATE_OF_BIRTH")
     private LocalDate dateOfBirth;
 
-    private Set<Patient> patients;
-
-    public static Doctor create(String firstName, LocalDate dateOfBirth, Set<Patient> patients) {
-        return new Doctor(null,firstName, dateOfBirth,patients);
+    public static Doctor create(String firstName, LocalDate dateOfBirth) {
+        return new Doctor(null,null,null,firstName, dateOfBirth);
     }
-
-    public void addPatient(Patient patient) {
-        this.patients.add(patient);
-    }
-
 }
