@@ -2,6 +2,7 @@ package com.korabelska.demo.service;
 
 import com.korabelska.demo.dto.CreateDepartmentDto;
 import com.korabelska.demo.dto.HospitalDto;
+import com.korabelska.demo.dto.UpdateDepartmentDto;
 import com.korabelska.demo.exceptions.EntityNotFoundException;
 import com.korabelska.demo.model.Department;
 import com.korabelska.demo.model.Hospital;
@@ -33,14 +34,13 @@ public class HospitalService {
     }
 
     public List<Department> findAllDepartmentsByHospitalId(String id) throws EntityNotFoundException {
-        Hospital hospital = hospitalRepository.findById(id).orElseThrow(() -> new EntityNotFoundException(id));
-        List<Department> departments = hospital.getDepartments();
+        List<Department> departments = departmentRepository.findByHospitalId(id);
         return departments;
     }
 
-    public Department findDepartmentByIdHospitalId(String id,String hospitalId) throws EntityNotFoundException {
-        Department department = departmentRepository.findByIdAndHospitalId(id,hospitalId);
-        return department;
+    public Department findDepartmentByIdAndHospitalId(String id, String hospitalId) throws EntityNotFoundException {
+        Optional<Department> department = departmentRepository.findByIdAndHospitalId(id,hospitalId);
+        return department.orElseThrow(() -> new EntityNotFoundException(id));
     }
 
     public Hospital create(HospitalDto hospitalDto) {
@@ -66,32 +66,23 @@ public class HospitalService {
         hospitalRepository.updateExisting(hospital);
         return hospital;
     }
-//
-//    public Hospital updateDepartment(UpdateDepartmentDto departmentDto,Department department,Hospital hospital) {
-//        hospital.getDepartments().remove(department);
-//        department = toDepartment(department,departmentDto);
-//        hospital.getDepartments().add(department);
-//        hospitalRepository.save(hospital);
-//        return hospital;
-//    }
-//
-//    public void delete(Long hospitalId) {
-//        if(hospitalRepository.existsById(hospitalId)) {
-//            hospitalRepository.deleteById(hospitalId);
-//        }
-//    }
-//
-//    public void deleteDepartment(Hospital hospital,String departmentId) {
-//        Optional<Department> matchingDepartment = hospital.getDepartments().stream().
-//                filter(pd -> pd.getId().equals(departmentId)).
-//                findFirst();
-//
-//        if(matchingDepartment.isPresent()) {
-//            hospital.getDepartments().remove(matchingDepartment.get());
-//            hospitalRepository.save(hospital);
-//        }
-//    }
-//
+
+    public Department updateDepartment(UpdateDepartmentDto departmentDto, String departmentId, String hospitalId) throws EntityNotFoundException {
+        Department department = departmentRepository
+                .findByIdAndHospitalId(departmentId,hospitalId)
+                .orElseThrow(() -> new EntityNotFoundException(departmentId));
+        department.setName(departmentDto.getName());
+        return departmentRepository.updateExisting(department);
+    }
+
+    public void delete(String id) {
+        hospitalRepository.deleteById(id);
+    }
+
+    public void deleteDepartment(String hospitalId,String departmentId) {
+        departmentRepository.deleteByIdAndHospitalId(departmentId,hospitalId);
+    }
+
     private Hospital toHospital(Hospital hospital, HospitalDto hospitalDto) {
         hospital.setAddress(hospitalDto.getAddress());
         hospital.setName(hospitalDto.getName());
@@ -103,8 +94,8 @@ public class HospitalService {
         return department;
     }
 
-//    private Department toDepartment(Department department, UpdateDepartmentDto departmentDto) {
-//        department.setName(departmentDto.getName());
+    private Department toDepartment(Department department, UpdateDepartmentDto departmentDto) {
+        department.setName(departmentDto.getName());
 //        Set<Long> doctorIds = departmentDto.getDoctorIds();
 //
 //        if(!doctorIds.isEmpty()) {
@@ -116,8 +107,8 @@ public class HospitalService {
 //                }
 //            }
 //        }
-//        return department;
-//    }
+        return department;
+    }
 
 
 

@@ -1,59 +1,45 @@
 package com.korabelska.demo.controller;
 
+import com.korabelska.demo.dto.DoctorDto;
+import com.korabelska.demo.exceptions.EntityNotFoundException;
+import com.korabelska.demo.model.Doctor;
+import com.korabelska.demo.service.DoctorService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Optional;
+import java.util.List;
 
 @RestController
 @RequestMapping("/doctors")
+@RequiredArgsConstructor
 public class DoctorController {
 
-//    private final DoctorService doctorService;
-//
-//
-//
-//    @Autowired
-//    public DoctorController(DoctorService doctorService, HospitalRepository hospitalRepository) {
-//        this.doctorService = doctorService;
-//        this.hospitalRepository = hospitalRepository;
-//    }
-//
-//    @GetMapping
-//    public ResponseEntity<Iterable<Doctor>> getAllDoctors() {
-//        Iterable<Doctor> doctors = doctorService.findAll();
-//        return ResponseEntity.ok(doctors);
-//    }
-//
-//    @GetMapping("/{id}")
-//    public ResponseEntity<Object> getDoctorById(@PathVariable Long id) {
-//        Optional<Doctor> doctor = doctorService.findById(id);
-//        boolean isPresent = doctor.isPresent();
-//
-//        if (isPresent) {
-//            return ResponseEntity.ok(doctor.get());
-//        }
-//        return ResponseEntity.notFound().build();
-//    }
-//
-//    @PostMapping
-//    public ResponseEntity<Object> createDoctor(@RequestBody DoctorDto doctorDto) {
-//        Long hospitalId = doctorDto.getHospitalId();
-//        Long departmentId = doctorDto.getDepartmentId();
-//        Optional<Hospital> hospital = hospitalRepository.findById(hospitalId);
-//
-//        if (hospital.isPresent()) {
-//            Optional<Department> department = hospital.get().getDepartments()
-//                    .stream().filter(dept -> dept.getId().equals(departmentId))
-//                    .findFirst();
-//
-//            if (department.isPresent()) {
-//                Doctor doctor = doctorService.create(doctorDto, department.get(), hospital.get());
-//                return ResponseEntity.ok(doctor);
-//            }
-//            return ResponseEntity.badRequest().build();
-//        }
-//        return null;
-//    }
+    private final DoctorService doctorService;
+
+
+    @GetMapping
+    public List<Doctor> getAllDoctors() {
+        List<Doctor> doctors = doctorService.findAll();
+        return doctors;
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<Object> getDoctorById(@PathVariable String id) {
+        Doctor doctor;
+        try {
+            doctorService.findById(id);
+        } catch (EntityNotFoundException e) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.notFound().build();
+    }
+
+    @PostMapping
+    public Doctor createDoctor(@RequestBody DoctorDto doctorDto) {
+        Doctor doctor = doctorService.create(doctorDto);
+        return doctor;
+    }
 //
 //    @PatchMapping("/{id}")
 //    public ResponseEntity<Object> updateDoctor(@PathVariable Long id, @RequestBody DoctorDto doctorDto) {

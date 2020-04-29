@@ -7,9 +7,9 @@ import java.time.LocalDate;
 @Data
 public class DoctorDto {
 
-    private Long hospitalId;
+    private String hospitalId;
 
-    private Long departmentId;
+    private String departmentId;
 
     private String firstName;
 

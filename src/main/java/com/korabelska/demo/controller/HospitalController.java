@@ -2,6 +2,7 @@ package com.korabelska.demo.controller;
 
 import com.korabelska.demo.dto.CreateDepartmentDto;
 import com.korabelska.demo.dto.HospitalDto;
+import com.korabelska.demo.dto.UpdateDepartmentDto;
 import com.korabelska.demo.exceptions.EntityNotFoundException;
 import com.korabelska.demo.model.Department;
 import com.korabelska.demo.model.Hospital;
@@ -53,7 +54,7 @@ public class HospitalController {
             (@PathVariable("id") String hospitalId, @PathVariable String departmentId) {
         Department department;
         try {
-             department = hospitalService.findDepartmentByIdHospitalId(departmentId, hospitalId);
+             department = hospitalService.findDepartmentByIdAndHospitalId(departmentId, hospitalId);
         } catch (EntityNotFoundException e) {
             return ResponseEntity.notFound().build();
         }
@@ -90,42 +91,30 @@ public class HospitalController {
         }
         return ResponseEntity.ok(hospital);
     }
-//
-//    @PatchMapping("/{id}/departments/{departmentId}")
-//    public ResponseEntity<Hospital> updateDepartment(@PathVariable("id") Long hospitalId,
-//                                                     @PathVariable Long departmentId,
-//                                                     @RequestBody UpdateDepartmentDto departmentDto) {
-//        Optional<Hospital> hospital = hospitalService.findById(hospitalId);
-//
-//        if (hospital.isPresent()) {
-//            Optional<Department> department = hospitalService
-//                    .findDepartmentByIdAndHospitalId(hospitalId, departmentId);
-//
-//            if (department.isPresent()) {
-//                Hospital updated = hospitalService.updateDepartment(
-//                        departmentDto, department.get(), hospital.get());
-//                return ResponseEntity.ok(updated);
-//            }
-//        }
-//        return ResponseEntity.notFound().build();
-//    }
-//
-//    @DeleteMapping("/{id}")
-//    public ResponseEntity<Object> deleteHospital(@PathVariable Long id) {
-//        hospitalService.delete(id);
-//        return ResponseEntity.ok().build();
-//    }
-//
-//    @DeleteMapping("/{id}/departments/{departmentId}")
-//    public ResponseEntity<Object> deleteDepartment(@PathVariable("id") Long hospitalId,
-//                                                   @PathVariable Long departmentId) {
-//
-//        Optional<Hospital> hospital = hospitalService.findById(hospitalId);
-//
-//        if (hospital.isPresent()) {
-//            hospitalService.deleteDepartment(hospital.get(),departmentId);
-//            return ResponseEntity.ok().build();
-//        }
-//        return ResponseEntity.notFound().build();
-//    }
+
+    @PatchMapping("/{id}/departments/{departmentId}")
+    public ResponseEntity<Department> updateDepartment(@PathVariable("id") String hospitalId,
+                                                     @PathVariable String departmentId,
+                                                     @RequestBody UpdateDepartmentDto departmentDto) {
+        Department department;
+        try {
+            department = hospitalService.updateDepartment(departmentDto,departmentId,hospitalId);
+        } catch (EntityNotFoundException e ) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(department);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Object> deleteHospital(@PathVariable String id) {
+        hospitalService.delete(id);
+        return ResponseEntity.noContent().build();
+    }
+
+    @DeleteMapping("/{id}/departments/{departmentId}")
+    public ResponseEntity<Object> deleteDepartment(@PathVariable("id") String hospitalId,
+                                                   @PathVariable String departmentId) {
+        hospitalService.deleteDepartment(hospitalId,departmentId);
+        return ResponseEntity.noContent().build();
+    }
 }

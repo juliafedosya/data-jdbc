@@ -9,6 +9,6 @@ public class UpdateDepartmentDto {
 
     private String name;
 
-    private Set<Long> doctorIds;
+//    private Set<Long> doctorIds;
 
 }
