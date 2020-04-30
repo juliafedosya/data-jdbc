@@ -5,6 +5,7 @@ import com.korabelska.demo.exceptions.EntityNotFoundException;
 import com.korabelska.demo.model.Doctor;
 import com.korabelska.demo.service.DoctorService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -24,52 +25,48 @@ public class DoctorController {
         return doctors;
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<Object> getDoctorById(@PathVariable String id) {
+    @GetMapping(params = {
+            "hospitalId",
+            "departmentId",
+            "doctorId"})
+    public ResponseEntity<Object> getDoctorById(@RequestParam String hospitalId,
+                                                @RequestParam String departmentId,
+                                                @RequestParam String doctorId) {
         Doctor doctor;
         try {
-            doctorService.findById(id);
+            doctor = doctorService.findByKey(hospitalId, departmentId, doctorId);
         } catch (EntityNotFoundException e) {
             return ResponseEntity.notFound().build();
         }
-        return ResponseEntity.notFound().build();
+        return ResponseEntity.ok(doctor);
     }
 
     @PostMapping
-    public Doctor createDoctor(@RequestBody DoctorDto doctorDto) {
+    public ResponseEntity<Doctor> createDoctor(@RequestBody DoctorDto doctorDto) {
         Doctor doctor = doctorService.create(doctorDto);
-        return doctor;
+        return new ResponseEntity<>(doctor, HttpStatus.CREATED);
     }
-//
-//    @PatchMapping("/{id}")
-//    public ResponseEntity<Object> updateDoctor(@PathVariable Long id, @RequestBody DoctorDto doctorDto) {
-//        Optional<Doctor> doctor = doctorService.findById(id);
-//
-//        if (doctor.isPresent()) {
-//            Long hospitalId = doctorDto.getHospitalId();
-//            Optional<Hospital> hospital = hospitalRepository.findById(hospitalId);
-//
-//            if (hospital.isPresent()) {
-//                Long departmentId = doctorDto.getDepartmentId();
-//                Optional<Department> department = hospital.get().getDepartments()
-//                        .stream().filter(dept -> dept.getId().equals(departmentId))
-//                        .findFirst();
-//
-//                if (department.isPresent()) {
-//                    Doctor updated = doctorService.update(doctorDto,
-//                            doctor.get(), department.get(), hospital.get());
-//                    return ResponseEntity.ok(updated);
-//                }
-//            } else {
-//                return ResponseEntity.badRequest().build();
-//            }
-//        }
-//        return ResponseEntity.notFound().build();
-//    }
-//
-//    @DeleteMapping("/{id}")
-//    public ResponseEntity<Object> deleteDoctor(@PathVariable Long id) {
-//        doctorService.delete(id);
-//        return ResponseEntity.ok().build();
-//    }
+
+    @PatchMapping("/{id}")
+    public ResponseEntity<Object> updateDoctor(@PathVariable String id,
+                                               @RequestBody DoctorDto doctorDto) {
+        Doctor doctor;
+        try {
+           doctor = doctorService.update(id, doctorDto);
+        }catch (EntityNotFoundException e) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok().build();
+    }
+
+    @DeleteMapping(params = {
+            "hospitalId",
+            "departmentId",
+            "doctorId"})
+    public ResponseEntity<Object> deleteDoctor(@RequestParam String hospitalId,
+                                               @RequestParam String departmentId,
+                                               @RequestParam String doctorId) {
+        doctorService.delete(hospitalId, departmentId, doctorId);
+        return ResponseEntity.ok().build();
+    }
 }

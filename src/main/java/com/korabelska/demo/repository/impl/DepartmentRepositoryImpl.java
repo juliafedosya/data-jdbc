@@ -15,6 +15,7 @@ import java.util.UUID;
 @Repository
 public class DepartmentRepositoryImpl extends BaseRepository<Department,String> {
 
+    private final Class<Department> repositoryClass = Department.class;
 
     public DepartmentRepositoryImpl(SpannerTemplate spannerTemplate) {
         super(spannerTemplate);
@@ -22,7 +23,7 @@ public class DepartmentRepositoryImpl extends BaseRepository<Department,String> 
 
     @Override
     public Department create(Department department) {
-        department.setId(UUID.randomUUID().toString());
+        department.setDepartmentId(UUID.randomUUID().toString());
         spannerTemplate.insert(department);
         return department;
     }
@@ -35,46 +36,24 @@ public class DepartmentRepositoryImpl extends BaseRepository<Department,String> 
 
     @Override
     public List<Department> findAll() {
-        List<Department> departments = spannerTemplate.readAll(Department.class);
+        List<Department> departments = spannerTemplate.readAll(repositoryClass);
         return departments;
     }
 
     @Override
-    public void delete(Department department) {
-        spannerTemplate.delete(department);
+    public Optional<Department> findByKey(String... keys) {
+        Department department = spannerTemplate.read(repositoryClass,Key.of(keys));
+        return Optional.ofNullable(department);
     }
 
     @Override
-    public void deleteById(String id) {
-        spannerTemplate.delete(Department.class, Key.of(id));
-    }
-
-    public void deleteByIdAndHospitalId(String id,String hospitalId) {
-//        spannerTemplate.query(Department.class,
-//                Statement.of("DELETE FROM DEPARTMENTS WHERE DEPARTMENT_ID=\"" + id
-//                        +"\" AND HOSPITAL_ID=\"" + hospitalId + "\""),null);
-        spannerTemplate.delete(Department.class,Key.of(hospitalId,id));
-    }
-
-    @Override
-    public boolean existsById(String id) {
-        boolean exists = spannerTemplate.existsById(Department.class,Key.of(id));
-        return exists;
-    }
-
-    @Override
-    public Optional<Department> findById(String id) {
-        Department department = spannerTemplate.read(Department.class,Key.of(id));
-        return Optional.of(department);
+    public void deleteByKey(String... keys) {
+        spannerTemplate.delete(repositoryClass, Key.of(keys));
     }
 
     public List<Department> findByHospitalId(String hospitalId) {
-        List<Department> departments = spannerTemplate.query(Department.class, Statement.of("SELECT * FROM DEPARTMENTS WHERE HOSPITAL_ID=\""+hospitalId + "\""),null);
+        List<Department> departments = spannerTemplate.query(repositoryClass, Statement.of("SELECT * FROM DEPARTMENTS WHERE HOSPITAL_ID=\""+hospitalId + "\""),null);
         return departments;
     }
 
-    public Optional<Department> findByIdAndHospitalId(String id,String hospitalId) {
-       Department department = spannerTemplate.read(Department.class,Key.of(hospitalId,id));
-       return Optional.of(department);
-    }
 }

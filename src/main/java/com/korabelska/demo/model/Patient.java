@@ -3,11 +3,11 @@ package com.korabelska.demo.model;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.data.annotation.Id;
+import org.springframework.cloud.gcp.data.spanner.core.mapping.Column;
+import org.springframework.cloud.gcp.data.spanner.core.mapping.PrimaryKey;
 
 
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -15,28 +15,20 @@ import java.util.List;
 @NoArgsConstructor
 public class Patient {
 
+    @PrimaryKey
+    @Column(name = "HOSPITAL_ID")
+    private String hospitalId;
 
-    private Long id;
+    @PrimaryKey(keyOrder = 2)
+    @Column(name = "PATIENT_ID")
+    private String patientId;
+
+    @Column(name = "FIRST_NAME")
     private String firstName;
+
+    @Column(name = "DATE_OF_BIRTH")
     private LocalDate dateOfBirth;
 
     private List<PatientDiagnosis> patientDiagnoses;
-
-    public static Patient create(String firstName, LocalDate dateOfBirth) {
-        return new Patient(null, firstName, dateOfBirth, null);
-    }
-
-    public static Patient create(String firstName, LocalDate dateOfBirth,
-                                 List<PatientDiagnosis> patientDiagnoses) {
-        return new Patient(null, firstName, dateOfBirth, patientDiagnoses);
-    }
-
-    public void addPatientDiagnosis(PatientDiagnosis patientDiagnosis) {
-        if(this.patientDiagnoses == null){
-            patientDiagnoses = new ArrayList<>();
-        }
-        this.patientDiagnoses.add(patientDiagnosis);
-    }
-
 
 }

@@ -18,12 +18,12 @@ public abstract class BaseRepository<T,ID> {
 
     public abstract List<T> findAll();
 
-    public abstract void delete(T t);
+    public abstract Optional<T> findByKey(ID ... keys);
 
-    public abstract void deleteById(ID id);
+    public void delete(T t) {
+        spannerTemplate.delete(t);
+    }
 
-    public abstract boolean existsById(ID id);
-
-    public abstract Optional<T> findById(ID id);
+    public abstract void deleteByKey(ID ... keys);
 
 }
