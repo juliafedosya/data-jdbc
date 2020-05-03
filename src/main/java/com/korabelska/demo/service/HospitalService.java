@@ -1,8 +1,7 @@
 package com.korabelska.demo.service;
 
-import com.korabelska.demo.dto.CreateDepartmentDto;
+import com.korabelska.demo.dto.DepartmentDto;
 import com.korabelska.demo.dto.HospitalDto;
-import com.korabelska.demo.dto.UpdateDepartmentDto;
 import com.korabelska.demo.exceptions.EntityNotFoundException;
 import com.korabelska.demo.model.Department;
 import com.korabelska.demo.model.Hospital;
@@ -23,37 +22,37 @@ public class HospitalService {
     private final DepartmentRepositoryImpl departmentRepository;
 
 
-    public Iterable<Hospital> findAll() {
-        Iterable<Hospital> hospitals = hospitalRepository.findAll();
+    public List<Hospital> findAll() {
+        List<Hospital> hospitals = hospitalRepository.findAll();
         return hospitals;
     }
 
     public Hospital findById(String id) throws EntityNotFoundException {
         Optional<Hospital> hospital = hospitalRepository.findByKey(id);
-        return hospital.orElseThrow(()->new EntityNotFoundException(id));
+        return hospital.orElseThrow(() -> new EntityNotFoundException(id));
     }
 
     public List<Department> findAllDepartmentsByHospitalId(String id) throws EntityNotFoundException {
-        List<Department> departments = departmentRepository.findByHospitalId(id);
-        return departments;
+        Optional<Hospital> optionalHospital = hospitalRepository.findByKey(id);
+        return optionalHospital.map(Hospital::getDepartments).orElseThrow(() -> new EntityNotFoundException(id));
     }
 
     public Department findDepartmentByIdAndHospitalId(String departmentId, String hospitalId) throws EntityNotFoundException {
-        Optional<Department> department = departmentRepository.findByKey(hospitalId,departmentId);
+        Optional<Department> department = departmentRepository.findByKey(hospitalId, departmentId);
         return department.orElseThrow(() -> new EntityNotFoundException(departmentId));
     }
 
     public Hospital create(HospitalDto hospitalDto) {
-        Hospital hospital = this.toHospital(new Hospital(),hospitalDto);
+        Hospital hospital = this.toHospital(new Hospital(), hospitalDto);
         hospitalRepository.create(hospital);
         return hospital;
     }
 
-    public Hospital createDepartment(CreateDepartmentDto createDepartmentDto,String hospitalId)
+    public Hospital createDepartment(DepartmentDto departmentDto, String hospitalId)
             throws EntityNotFoundException {
         Hospital hospital = hospitalRepository.findByKey(hospitalId)
                 .orElseThrow(() -> new EntityNotFoundException(hospitalId));
-        Department department = toDepartment(new Department(), createDepartmentDto);
+        Department department = toDepartment(new Department(), departmentDto);
         department.setHospitalId(hospitalId);
         hospital.addDepartment(departmentRepository.create(department));
         return hospital;
@@ -67,9 +66,9 @@ public class HospitalService {
         return hospital;
     }
 
-    public Department updateDepartment(UpdateDepartmentDto departmentDto, String departmentId, String hospitalId) throws EntityNotFoundException {
+    public Department updateDepartment(DepartmentDto departmentDto, String departmentId, String hospitalId) throws EntityNotFoundException {
         Department department = departmentRepository
-                .findByKey(hospitalId,departmentId)
+                .findByKey(hospitalId, departmentId)
                 .orElseThrow(() -> new EntityNotFoundException(departmentId));
         department.setName(departmentDto.getName());
         return departmentRepository.updateExisting(department);
@@ -79,8 +78,8 @@ public class HospitalService {
         hospitalRepository.deleteByKey(id);
     }
 
-    public void deleteDepartment(String hospitalId,String departmentId) {
-        departmentRepository.deleteByKey(hospitalId,departmentId);
+    public void deleteDepartment(String hospitalId, String departmentId) {
+        departmentRepository.deleteByKey(hospitalId, departmentId);
     }
 
     private Hospital toHospital(Hospital hospital, HospitalDto hospitalDto) {
@@ -89,28 +88,9 @@ public class HospitalService {
         return hospital;
     }
 
-    private Department toDepartment(Department department, CreateDepartmentDto createDepartmentDto) {
-        department.setName(createDepartmentDto.getName());
-        return department;
-    }
-
-    private Department toDepartment(Department department, UpdateDepartmentDto departmentDto) {
+    private Department toDepartment(Department department, DepartmentDto departmentDto) {
         department.setName(departmentDto.getName());
-//        Set<Long> doctorIds = departmentDto.getDoctorIds();
-//
-//        if(!doctorIds.isEmpty()) {
-//            for(Long doctorId : doctorIds) {
-//                Optional<Doctor> optDoctor = doctorRepository.findById(doctorId);
-//                if(optDoctor.isPresent()) {
-//                    department.addDoctor(optDoctor.get());
-//                    doctorRepository.changeDepartment(department.getId(), optDoctor.get().getId());
-//                }
-//            }
-//        }
         return department;
     }
-
-
-
 
 }

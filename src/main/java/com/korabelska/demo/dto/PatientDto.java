@@ -12,6 +12,4 @@ public class PatientDto {
 
     private LocalDate dateOfBirth;
 
-    private Long doctorId;
-
 }

@@ -25,7 +25,7 @@ public class PatientDiagnosis {
     private String patientId;
 
     @PrimaryKey(keyOrder = 3)
-    @Column(name = "PATIENT_ID")
+    @Column(name = "DIAGNOSIS_ID")
     private String diagnosisId;
 
     @Column(name = "DOCTOR_ID")

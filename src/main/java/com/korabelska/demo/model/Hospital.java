@@ -9,7 +9,6 @@ import org.springframework.cloud.gcp.data.spanner.core.mapping.Interleaved;
 import org.springframework.cloud.gcp.data.spanner.core.mapping.PrimaryKey;
 import org.springframework.cloud.gcp.data.spanner.core.mapping.Table;
 
-import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -33,10 +32,9 @@ public class Hospital {
     @EqualsAndHashCode.Exclude
     private List<Department> departments;
 
-    public static Hospital create(String name, String address,List<Department> departments) {
-        Hospital hospital = new Hospital(null,name,address,departments);
-        return hospital;
-    }
+    @Interleaved
+    @EqualsAndHashCode.Exclude
+    private List<Patient> patients;
 
     public void addDepartment(Department department) {
         if(departments == null) {

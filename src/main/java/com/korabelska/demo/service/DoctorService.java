@@ -27,14 +27,17 @@ public class DoctorService {
         return doctorRepository.findAll();
     }
 
-    public Doctor create(DoctorDto doctorDto) {
+    public Doctor create(String hospitalId, String departmentId,DoctorDto doctorDto) {
         Doctor doctor = toDoctor(doctorDto);
-        Doctor saved = doctorRepository.create(doctor);
-        return saved;
+        doctor.setHospitalId(hospitalId);
+        doctor.setDepartmentId(departmentId);
+        return doctorRepository.create(doctor);
     }
 
-    public Doctor update(String doctorId, DoctorDto doctorDto) throws EntityNotFoundException {
+    public Doctor update(String hospitalId, String departmentId, String doctorId, DoctorDto doctorDto) throws EntityNotFoundException {
         Doctor doctor = toDoctor(doctorDto);
+        doctor.setHospitalId(hospitalId);
+        doctor.setDepartmentId(departmentId);
         doctor.setDoctorId(doctorId);
         return doctorRepository.updateExisting(doctor);
     }
@@ -47,17 +50,7 @@ public class DoctorService {
         Doctor doctor = new Doctor();
         doctor.setDateOfBirth(doctorDto.getDateOfBirth());
         doctor.setFirstName(doctorDto.getFirstName());
-        doctor.setHospitalId(doctorDto.getHospitalId());
-        doctor.setDepartmentId(doctorDto.getDepartmentId());
         return doctor;
     }
-
-//    private Doctor toDoctor(Doctor doctor,DoctorDto doctorDto) {
-//        doctor.setDateOfBirth(doctorDto.getDateOfBirth());
-//        doctor.setFirstName(doctorDto.getFirstName());
-//        doctor.setHospitalId(doctorDto.getHospitalId());
-//        doctor.setDepartmentId(doctorDto.getDepartmentId());
-//        return doctor;
-//    }
 
 }

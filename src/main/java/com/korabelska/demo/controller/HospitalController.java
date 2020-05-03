@@ -1,8 +1,7 @@
 package com.korabelska.demo.controller;
 
-import com.korabelska.demo.dto.CreateDepartmentDto;
+import com.korabelska.demo.dto.DepartmentDto;
 import com.korabelska.demo.dto.HospitalDto;
-import com.korabelska.demo.dto.UpdateDepartmentDto;
 import com.korabelska.demo.exceptions.EntityNotFoundException;
 import com.korabelska.demo.model.Department;
 import com.korabelska.demo.model.Hospital;
@@ -22,8 +21,8 @@ public class HospitalController {
     private final HospitalService hospitalService;
 
     @GetMapping
-    public Iterable<Hospital> getAllHospitals() {
-        Iterable<Hospital> hospitals = hospitalService.findAll();
+    public List<Hospital> getAllHospitals() {
+        List<Hospital> hospitals = hospitalService.findAll();
         return hospitals;
     }
 
@@ -46,7 +45,7 @@ public class HospitalController {
         } catch (EntityNotFoundException e) {
             return ResponseEntity.notFound().build();
         }
-            return ResponseEntity.ok(departments);
+        return ResponseEntity.ok(departments);
     }
 
     @GetMapping("/{id}/departments/{departmentId}")
@@ -54,7 +53,7 @@ public class HospitalController {
             (@PathVariable("id") String hospitalId, @PathVariable String departmentId) {
         Department department;
         try {
-             department = hospitalService.findDepartmentByIdAndHospitalId(departmentId, hospitalId);
+            department = hospitalService.findDepartmentByIdAndHospitalId(departmentId, hospitalId);
         } catch (EntityNotFoundException e) {
             return ResponseEntity.notFound().build();
         }
@@ -69,14 +68,14 @@ public class HospitalController {
 
     @PostMapping("/{id}/departments")
     public ResponseEntity<Hospital> createDepartment(@PathVariable("id") String hospitalId,
-                                                     @RequestBody CreateDepartmentDto createDepartmentDto) {
+                                                     @RequestBody DepartmentDto departmentDto) {
         Hospital hospital;
         try {
-            hospital = hospitalService.createDepartment(createDepartmentDto, hospitalId);
+            hospital = hospitalService.createDepartment(departmentDto, hospitalId);
         } catch (EntityNotFoundException e) {
             return ResponseEntity.notFound().build();
         }
-        return new ResponseEntity<>(hospital,HttpStatus.CREATED);
+        return new ResponseEntity<>(hospital, HttpStatus.CREATED);
     }
 
 
@@ -94,27 +93,27 @@ public class HospitalController {
 
     @PatchMapping("/{id}/departments/{departmentId}")
     public ResponseEntity<Department> updateDepartment(@PathVariable("id") String hospitalId,
-                                                     @PathVariable String departmentId,
-                                                     @RequestBody UpdateDepartmentDto departmentDto) {
+                                                       @PathVariable String departmentId,
+                                                       @RequestBody DepartmentDto departmentDto) {
         Department department;
         try {
-            department = hospitalService.updateDepartment(departmentDto,departmentId,hospitalId);
-        } catch (EntityNotFoundException e ) {
+            department = hospitalService.updateDepartment(departmentDto, departmentId, hospitalId);
+        } catch (EntityNotFoundException e) {
             return ResponseEntity.notFound().build();
         }
         return ResponseEntity.ok(department);
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Object> deleteHospital(@PathVariable String id) {
-        hospitalService.delete(id);
+    @DeleteMapping("/{hospitalId}")
+    public ResponseEntity<Void> deleteHospital(@PathVariable String hospitalId) {
+        hospitalService.delete(hospitalId);
         return ResponseEntity.noContent().build();
     }
 
-    @DeleteMapping("/{id}/departments/{departmentId}")
-    public ResponseEntity<Object> deleteDepartment(@PathVariable("id") String hospitalId,
-                                                   @PathVariable String departmentId) {
-        hospitalService.deleteDepartment(hospitalId,departmentId);
+    @DeleteMapping("/{hospitalId}/departments/{departmentId}")
+    public ResponseEntity<Void> deleteDepartment(@PathVariable String hospitalId,
+                                                 @PathVariable String departmentId) {
+        hospitalService.deleteDepartment(hospitalId, departmentId);
         return ResponseEntity.noContent().build();
     }
 }

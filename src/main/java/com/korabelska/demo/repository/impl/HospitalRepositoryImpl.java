@@ -15,7 +15,7 @@ import java.util.UUID;
 @Repository
 public class HospitalRepositoryImpl extends BaseRepository<Hospital,String> {
 
-    private final Class<Hospital> repositoryClass = Hospital.class;
+    private static final Class<Hospital> REPOSITORY_CLASS = Hospital.class;
 
     public HospitalRepositoryImpl(SpannerTemplate spannerTemplate) {
         super(spannerTemplate);
@@ -30,7 +30,7 @@ public class HospitalRepositoryImpl extends BaseRepository<Hospital,String> {
 
     @Override
     public Hospital updateExisting(Hospital hospital) throws EntityNotFoundException {
-        if(spannerTemplate.existsById(repositoryClass,Key.of(hospital.getId()))) {
+        if(spannerTemplate.existsById(REPOSITORY_CLASS,Key.of(hospital.getId()))) {
             spannerTemplate.update(hospital);
             return hospital;
         }
@@ -39,18 +39,18 @@ public class HospitalRepositoryImpl extends BaseRepository<Hospital,String> {
 
     @Override
     public List<Hospital> findAll() {
-        List<Hospital> hospitals = spannerTemplate.readAll(repositoryClass);
+        List<Hospital> hospitals = spannerTemplate.readAll(REPOSITORY_CLASS);
         return hospitals;
     }
 
     @Override
     public Optional<Hospital> findByKey(String... keys) {
-        Hospital hospital = spannerTemplate.read(repositoryClass,Key.of(keys));
+        Hospital hospital = spannerTemplate.read(REPOSITORY_CLASS,Key.of(keys));
         return Optional.ofNullable(hospital);
     }
 
     @Override
     public void deleteByKey(String... keys) {
-        spannerTemplate.delete(repositoryClass,Key.of(keys));
+        spannerTemplate.delete(REPOSITORY_CLASS,Key.of(keys));
     }
 }

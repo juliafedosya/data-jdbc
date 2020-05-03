@@ -25,13 +25,12 @@ public class DoctorController {
         return doctors;
     }
 
-    @GetMapping(params = {
+    @GetMapping(path = "/{doctorId}",params = {
             "hospitalId",
-            "departmentId",
-            "doctorId"})
+            "departmentId"})
     public ResponseEntity<Object> getDoctorById(@RequestParam String hospitalId,
                                                 @RequestParam String departmentId,
-                                                @RequestParam String doctorId) {
+                                                @PathVariable String doctorId) {
         Doctor doctor;
         try {
             doctor = doctorService.findByKey(hospitalId, departmentId, doctorId);
@@ -41,32 +40,39 @@ public class DoctorController {
         return ResponseEntity.ok(doctor);
     }
 
-    @PostMapping
-    public ResponseEntity<Doctor> createDoctor(@RequestBody DoctorDto doctorDto) {
-        Doctor doctor = doctorService.create(doctorDto);
+    @PostMapping(params = {
+            "hospitalId",
+            "departmentId"})
+    public ResponseEntity<Doctor> createDoctor(@RequestParam String hospitalId,
+                                               @RequestParam String departmentId,
+                                               @RequestBody DoctorDto doctorDto) {
+        Doctor doctor = doctorService.create(hospitalId, departmentId,doctorDto);
         return new ResponseEntity<>(doctor, HttpStatus.CREATED);
     }
 
-    @PatchMapping("/{id}")
-    public ResponseEntity<Object> updateDoctor(@PathVariable String id,
+    @PatchMapping(path = "/{doctorId}",params = {
+            "hospitalId",
+            "departmentId"})
+    public ResponseEntity<Object> updateDoctor(@RequestParam String hospitalId,
+                                               @RequestParam String departmentId,
+                                               @PathVariable String doctorId,
                                                @RequestBody DoctorDto doctorDto) {
         Doctor doctor;
         try {
-           doctor = doctorService.update(id, doctorDto);
-        }catch (EntityNotFoundException e) {
+            doctor = doctorService.update(hospitalId,departmentId,doctorId, doctorDto);
+        } catch (EntityNotFoundException e) {
             return ResponseEntity.notFound().build();
         }
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok(doctor);
     }
 
-    @DeleteMapping(params = {
+    @DeleteMapping(path = "/{doctorId}",params = {
             "hospitalId",
-            "departmentId",
-            "doctorId"})
-    public ResponseEntity<Object> deleteDoctor(@RequestParam String hospitalId,
+            "departmentId"})
+    public ResponseEntity<Void> deleteDoctor(@RequestParam String hospitalId,
                                                @RequestParam String departmentId,
-                                               @RequestParam String doctorId) {
+                                               @PathVariable String doctorId) {
         doctorService.delete(hospitalId, departmentId, doctorId);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.noContent().build();
     }
 }

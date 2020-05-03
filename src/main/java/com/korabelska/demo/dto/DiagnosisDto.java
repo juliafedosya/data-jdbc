@@ -11,6 +11,8 @@ public class DiagnosisDto {
 
     private String remarks;
 
+    private String doctorId;
+
     LocalDate dateConfirmed;
 
 }

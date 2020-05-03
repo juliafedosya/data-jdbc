@@ -1,103 +1,106 @@
 package com.korabelska.demo.service;
 
+import com.korabelska.demo.dto.DiagnosisDto;
+import com.korabelska.demo.dto.PatientDto;
+import com.korabelska.demo.exceptions.EntityNotFoundException;
+import com.korabelska.demo.model.Patient;
+import com.korabelska.demo.model.PatientDiagnosis;
+import com.korabelska.demo.repository.impl.PatientDiagnosisRepositoryImpl;
+import com.korabelska.demo.repository.impl.PatientRepositoryImpl;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.Optional;
+
 @Service
+@RequiredArgsConstructor
 public class PatientService {
 
-//    PatientRepository patientRepository;
-//
-//    DoctorRepository doctorRepository;
-//
-//    @Autowired
-//    public PatientService(PatientRepository patientRepository,DoctorRepository doctorRepository) {
-//        this.patientRepository = patientRepository;
-//        this.doctorRepository = doctorRepository;
-//    }
-//
-//    public Iterable<Patient> findAll() {
-//        Iterable<Patient> patients = patientRepository.findAll();
-//        return patients;
-//    }
-//
-//    public Optional<Patient> findById(Long id) {
-//        Optional<Patient> patient= patientRepository.findById(id);
-//        return patient;
-//    }
-//
-//    public List<PatientDiagnosis> findPatientDiagnosesByPatientId(Long id) {
-//        List<PatientDiagnosis> patientDiagnoses = patientRepository.findPatientDiagnosesByPatientId(id);
-//        return patientDiagnoses;
-//    }
-//
-//    public Optional<PatientDiagnosis> findPatientDiagnosisByIdAndPatientId(Long patientId,Long patientDiagnosisId) {
-//        Optional<PatientDiagnosis> patientDiagnoses = patientRepository
-//                .findPatientDiagnosisByIdAndByPatientId(patientDiagnosisId,patientId);
-//        return patientDiagnoses;
-//    }
-//
-//    public Patient create(PatientDto patientDto) {
-//        Patient patient = this.toPatient(patientDto);
-//        patientRepository.save(patient);
-//        return patient;
-//    }
-//
-//    public Patient createDiagnosis(DiagnosisDto diagnosisDto, Patient patient) {
-//        PatientDiagnosis diagnosis = new PatientDiagnosis();
-//
-//        diagnosis = this.toPatientDiagnosis(diagnosis,diagnosisDto);
-//
-//        patient.addPatientDiagnosis(diagnosis);
-//        patientRepository.save(patient);
-//        return patient;
-//    }
-//
-//    public Patient update(Patient current,PatientDto patientDto){
-//        current.setFirstName(patientDto.getFirstName());
-//        current.setDateOfBirth(patientDto.getDateOfBirth());
-//        patientRepository.save(current);
-//        return current;
-//    }
-//
-//    public Patient updateDiagnosis(DiagnosisDto diagnosisDto, PatientDiagnosis diagnosis,Patient patient) {
-//        patient.getPatientDiagnoses().remove(diagnosis);
-//        diagnosis = this.toPatientDiagnosis(diagnosis,diagnosisDto);
-//        patient.getPatientDiagnoses().add(diagnosis);
-//        return patientRepository.save(patient);
-//    }
-//
-//    public void delete(Long id) {
-//        Boolean exists = patientRepository.existsById(id);
-//        if (exists) {
-//            patientRepository.deleteById(id);
-//        }
-//    }
-//
-//    public void deleteDiagnosis(Patient patient, Long diagnosisId) {
-//
-//        Optional<PatientDiagnosis> matchingDiagnosis = patient.getPatientDiagnoses().stream().
-//                filter(pd -> pd.getId().equals(diagnosisId)).
-//                findFirst();
-//
-//        if(matchingDiagnosis.isPresent()) {
-//            patient.getPatientDiagnoses().remove(matchingDiagnosis.get());
-//            patientRepository.save(patient);
-//        }
-//
-//    }
-//
-//    private Patient toPatient(PatientDto patientDto) {
-//        Patient patient = new Patient();
-//        patient.setDateOfBirth(patientDto.getDateOfBirth());
-//        patient.setFirstName(patientDto.getFirstName());
-//        return patient;
-//    }
-//
-//    private PatientDiagnosis toPatientDiagnosis(PatientDiagnosis diagnosis, DiagnosisDto diagnosisDto) {
-//        diagnosis.setDateConfirmed(diagnosisDto.getDateConfirmed());
-//        diagnosis.setDetails(diagnosisDto.getDetails());
-//        diagnosis.setRemarks(diagnosisDto.getRemarks());
-//        return diagnosis;
-//    }
+    private final PatientRepositoryImpl patientRepository;
+
+    private final PatientDiagnosisRepositoryImpl patientDiagnosisRepository;
+
+    public List<Patient> findAll() {
+        List<Patient> patients = patientRepository.findAll();
+        return patients;
+    }
+
+    public List<Patient> findPatientsByHospitalId(String hospitalId) {
+        List<Patient> patients = patientRepository.findPatientsByHospitalId(hospitalId);
+        return patients;
+    }
+
+    public Patient findByKey(String hospitalId, String patientId) throws EntityNotFoundException {
+        Optional<Patient> patient = patientRepository.findByKey(hospitalId, patientId);
+        return patient.orElseThrow(() -> new EntityNotFoundException(patientId));
+    }
+
+    public List<PatientDiagnosis> findPatientDiagnosesByPatientId(String patientId) {
+        List<PatientDiagnosis> patientDiagnoses = patientDiagnosisRepository.findDiagnosisByPatientId(patientId);
+        return patientDiagnoses;
+    }
+
+    public PatientDiagnosis findPatientDiagnosisByKey(String hospitalId, String patientId, String patientDiagnosisId) throws EntityNotFoundException {
+        Optional<PatientDiagnosis> patientDiagnoses = patientDiagnosisRepository
+                .findByKey(hospitalId,patientId,patientDiagnosisId);
+        return patientDiagnoses.orElseThrow(() -> new EntityNotFoundException(patientDiagnosisId));
+    }
+
+    public Patient create(PatientDto patientDto, String hospitalId) {
+        Patient patient = this.toPatient(patientDto);
+        patient.setHospitalId(hospitalId);
+        patientRepository.create(patient);
+        return patient;
+    }
+
+    public PatientDiagnosis createDiagnosis(DiagnosisDto diagnosisDto, String hospitalId, String patientId) {
+        PatientDiagnosis diagnosis = toPatientDiagnosis(diagnosisDto);
+        diagnosis.setPatientId(patientId);
+        diagnosis.setHospitalId(hospitalId);
+
+        return patientDiagnosisRepository.create(diagnosis);
+    }
+
+    public Patient update(String hospitalId,String patientId, PatientDto patientDto) throws EntityNotFoundException {
+        Patient patient = toPatient(patientDto);
+        patient.setHospitalId(hospitalId);
+        patient.setPatientId(patientId);
+
+        return patientRepository.updateExisting(patient);
+    }
+
+    public PatientDiagnosis updateDiagnosis(DiagnosisDto diagnosisDto, String hospitalId, String patientId, String diagnosisId) throws EntityNotFoundException {
+        PatientDiagnosis diagnosis = this.toPatientDiagnosis(diagnosisDto);
+        diagnosis.setHospitalId(hospitalId);
+        diagnosis.setPatientId(patientId);
+        diagnosis.setDiagnosisId(diagnosisId);
+
+        return patientDiagnosisRepository.updateExisting(diagnosis);
+    }
+
+    public void delete(String hospitalId, String patientId) {
+        patientRepository.deleteByKey(hospitalId, patientId);
+    }
+
+    public void deleteDiagnosis(String hospitalId, String patientId, String diagnosisId) {
+        patientDiagnosisRepository.deleteByKey(hospitalId, patientId, diagnosisId);
+    }
+
+    private Patient toPatient(PatientDto patientDto) {
+        Patient patient = new Patient();
+        patient.setDateOfBirth(patientDto.getDateOfBirth());
+        patient.setFirstName(patientDto.getFirstName());
+        return patient;
+    }
+
+    private PatientDiagnosis toPatientDiagnosis(DiagnosisDto diagnosisDto) {
+        PatientDiagnosis diagnosis = new PatientDiagnosis();
+        diagnosis.setDateConfirmed(diagnosisDto.getDateConfirmed());
+        diagnosis.setDetails(diagnosisDto.getDetails());
+        diagnosis.setRemarks(diagnosisDto.getRemarks());
+        diagnosis.setDoctorId(diagnosisDto.getDoctorId());
+        return diagnosis;
+    }
 
 }
