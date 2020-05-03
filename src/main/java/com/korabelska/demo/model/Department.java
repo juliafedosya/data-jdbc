@@ -26,10 +26,7 @@ public class Department {
     private String name;
 
     @EqualsAndHashCode.Exclude
-    @ToString.Exclude
     @Interleaved
     private List<Doctor> doctors;
-
-
 
 }

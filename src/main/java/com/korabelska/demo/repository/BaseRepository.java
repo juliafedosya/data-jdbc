@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Optional;
 
 @RequiredArgsConstructor
-public abstract class BaseRepository<T,ID> {
+public abstract class BaseRepository<T, ID> {
 
     protected final SpannerTemplate spannerTemplate;
 
@@ -18,12 +18,12 @@ public abstract class BaseRepository<T,ID> {
 
     public abstract List<T> findAll();
 
-    public abstract Optional<T> findByKey(ID ... keys);
+    public abstract Optional<T> findByKey(ID... keys);
 
     public void delete(T t) {
         spannerTemplate.delete(t);
     }
 
-    public abstract void deleteByKey(ID ... keys);
+    public abstract void deleteByKey(ID... keys);
 
 }

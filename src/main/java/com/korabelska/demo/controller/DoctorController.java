@@ -25,7 +25,7 @@ public class DoctorController {
         return doctors;
     }
 
-    @GetMapping(path = "/{doctorId}",params = {
+    @GetMapping(path = "/{doctorId}", params = {
             "hospitalId",
             "departmentId"})
     public ResponseEntity<Object> getDoctorById(@RequestParam String hospitalId,
@@ -46,11 +46,11 @@ public class DoctorController {
     public ResponseEntity<Doctor> createDoctor(@RequestParam String hospitalId,
                                                @RequestParam String departmentId,
                                                @RequestBody DoctorDto doctorDto) {
-        Doctor doctor = doctorService.create(hospitalId, departmentId,doctorDto);
+        Doctor doctor = doctorService.create(hospitalId, departmentId, doctorDto);
         return new ResponseEntity<>(doctor, HttpStatus.CREATED);
     }
 
-    @PatchMapping(path = "/{doctorId}",params = {
+    @PatchMapping(path = "/{doctorId}", params = {
             "hospitalId",
             "departmentId"})
     public ResponseEntity<Object> updateDoctor(@RequestParam String hospitalId,
@@ -59,19 +59,19 @@ public class DoctorController {
                                                @RequestBody DoctorDto doctorDto) {
         Doctor doctor;
         try {
-            doctor = doctorService.update(hospitalId,departmentId,doctorId, doctorDto);
+            doctor = doctorService.update(hospitalId, departmentId, doctorId, doctorDto);
         } catch (EntityNotFoundException e) {
             return ResponseEntity.notFound().build();
         }
         return ResponseEntity.ok(doctor);
     }
 
-    @DeleteMapping(path = "/{doctorId}",params = {
+    @DeleteMapping(path = "/{doctorId}", params = {
             "hospitalId",
             "departmentId"})
     public ResponseEntity<Void> deleteDoctor(@RequestParam String hospitalId,
-                                               @RequestParam String departmentId,
-                                               @PathVariable String doctorId) {
+                                             @RequestParam String departmentId,
+                                             @PathVariable String doctorId) {
         doctorService.delete(hospitalId, departmentId, doctorId);
         return ResponseEntity.noContent().build();
     }

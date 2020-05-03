@@ -47,7 +47,8 @@ public class PatientRepositoryImpl extends BaseRepository<Patient,String> {
 
     public List<Patient> findPatientsByHospitalId(String hospitalId) {
         List<Patient> patients = spannerTemplate.query(REPOSITORY_CLASS,
-                Statement.of("SELECT * FROM PATIENTS WHERE HOSPITAL_ID=\"" + hospitalId + "\""),
+                Statement.of("SELECT HOSPITAL_ID,PATIENT_ID,FIRST_NAME,DATE_OF_BIRTH" +
+                        " FROM PATIENTS WHERE HOSPITAL_ID=\"" + hospitalId + "\""),
                 null);
         return patients;
     }

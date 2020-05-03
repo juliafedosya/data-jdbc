@@ -31,8 +31,8 @@ public class PatientDiagnosisRepositoryImpl extends BaseRepository<PatientDiagno
 
     @Override
     public PatientDiagnosis updateExisting(PatientDiagnosis patientDiagnosis) throws EntityNotFoundException {
-        Key key = Key.of(patientDiagnosis.getHospitalId(),patientDiagnosis.getPatientId(),patientDiagnosis.getDiagnosisId());
-        if(spannerTemplate.existsById(REPOSITORY_CLASS,key)) {
+        Key key = Key.of(patientDiagnosis.getHospitalId(), patientDiagnosis.getPatientId(), patientDiagnosis.getDiagnosisId());
+        if (spannerTemplate.existsById(REPOSITORY_CLASS, key)) {
             spannerTemplate.update(patientDiagnosis);
             return patientDiagnosis;
         }
@@ -47,7 +47,7 @@ public class PatientDiagnosisRepositoryImpl extends BaseRepository<PatientDiagno
 
     public List<PatientDiagnosis> findDiagnosisByPatientId(String patientId) {
         List<PatientDiagnosis> diagnoses = spannerTemplate.query(REPOSITORY_CLASS,
-                Statement.of("SELECT * FROM PATIENTS WHERE PATIENT_ID=\"" + patientId + "\""),
+                Statement.of("SELECT * FROM PATIENT_DIAGNOSES WHERE PATIENT_ID=\"" + patientId + "\""),
                 null);
         return diagnoses;
     }

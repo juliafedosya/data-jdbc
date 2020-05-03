@@ -13,7 +13,7 @@ import java.util.UUID;
 
 @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
 @Repository
-public class HospitalRepositoryImpl extends BaseRepository<Hospital,String> {
+public class HospitalRepositoryImpl extends BaseRepository<Hospital, String> {
 
     private static final Class<Hospital> REPOSITORY_CLASS = Hospital.class;
 
@@ -30,7 +30,7 @@ public class HospitalRepositoryImpl extends BaseRepository<Hospital,String> {
 
     @Override
     public Hospital updateExisting(Hospital hospital) throws EntityNotFoundException {
-        if(spannerTemplate.existsById(REPOSITORY_CLASS,Key.of(hospital.getId()))) {
+        if (spannerTemplate.existsById(REPOSITORY_CLASS, Key.of(hospital.getId()))) {
             spannerTemplate.update(hospital);
             return hospital;
         }
@@ -45,12 +45,12 @@ public class HospitalRepositoryImpl extends BaseRepository<Hospital,String> {
 
     @Override
     public Optional<Hospital> findByKey(String... keys) {
-        Hospital hospital = spannerTemplate.read(REPOSITORY_CLASS,Key.of(keys));
+        Hospital hospital = spannerTemplate.read(REPOSITORY_CLASS, Key.of(keys));
         return Optional.ofNullable(hospital);
     }
 
     @Override
     public void deleteByKey(String... keys) {
-        spannerTemplate.delete(REPOSITORY_CLASS,Key.of(keys));
+        spannerTemplate.delete(REPOSITORY_CLASS, Key.of(keys));
     }
 }

@@ -14,7 +14,7 @@ import java.util.UUID;
 
 @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
 @Repository
-public class DepartmentRepositoryImpl extends BaseRepository<Department,String> {
+public class DepartmentRepositoryImpl extends BaseRepository<Department, String> {
 
     private static final Class<Department> REPOSITORY_CLASS = Department.class;
 
@@ -31,8 +31,8 @@ public class DepartmentRepositoryImpl extends BaseRepository<Department,String> 
 
     @Override
     public Department updateExisting(Department department) throws EntityNotFoundException {
-        Key key = Key.of(department.getHospitalId(),department.getDepartmentId());
-        if(spannerTemplate.existsById(REPOSITORY_CLASS,key)) {
+        Key key = Key.of(department.getHospitalId(), department.getDepartmentId());
+        if (spannerTemplate.existsById(REPOSITORY_CLASS, key)) {
             spannerTemplate.update(department);
             return department;
         }
@@ -47,7 +47,7 @@ public class DepartmentRepositoryImpl extends BaseRepository<Department,String> 
 
     @Override
     public Optional<Department> findByKey(String... keys) {
-        Department department = spannerTemplate.read(REPOSITORY_CLASS,Key.of(keys));
+        Department department = spannerTemplate.read(REPOSITORY_CLASS, Key.of(keys));
         return Optional.ofNullable(department);
     }
 
@@ -56,8 +56,12 @@ public class DepartmentRepositoryImpl extends BaseRepository<Department,String> 
         spannerTemplate.delete(REPOSITORY_CLASS, Key.of(keys));
     }
 
+    //TODO fix this query and/or class mapping the entity
+    // so that no exception would be produced in this method
     public List<Department> findByHospitalId(String hospitalId) {
-        List<Department> departments = spannerTemplate.query(REPOSITORY_CLASS, Statement.of("SELECT HOSPITAL_ID,DEPARTMENT_ID,NAME FROM DEPARTMENTS WHERE HOSPITAL_ID=\""+hospitalId + "\""),null);
+        List<Department> departments = spannerTemplate.query(REPOSITORY_CLASS,
+                Statement.of("SELECT HOSPITAL_ID,DEPARTMENT_ID,NAME FROM DEPARTMENTS WHERE HOSPITAL_ID=\""
+                        + hospitalId + "\""), null);
         return departments;
     }
 

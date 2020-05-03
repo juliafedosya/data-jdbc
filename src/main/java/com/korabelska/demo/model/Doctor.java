@@ -15,16 +15,16 @@ import java.time.LocalDate;
 @Table(name = "DOCTORS")
 public class Doctor {
 
-    @Column(name = "HOSPITAL_ID")
     @PrimaryKey
+    @Column(name = "HOSPITAL_ID")
     private String hospitalId;
 
-    @Column(name = "DEPARTMENT_ID")
     @PrimaryKey(keyOrder = 2)
+    @Column(name = "DEPARTMENT_ID")
     private String departmentId;
 
-    @Column(name = "DOCTOR_ID")
     @PrimaryKey(keyOrder = 3)
+    @Column(name = "DOCTOR_ID")
     private String doctorId;
 
     @Column(name = "FIRST_NAME")
@@ -34,6 +34,6 @@ public class Doctor {
     private LocalDate dateOfBirth;
 
     public static Doctor create(String firstName, LocalDate dateOfBirth) {
-        return new Doctor(null,null,null,firstName, dateOfBirth);
+        return new Doctor(null, null, null, firstName, dateOfBirth);
     }
 }

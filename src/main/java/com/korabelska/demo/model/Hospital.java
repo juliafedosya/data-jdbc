@@ -23,7 +23,7 @@ public class Hospital {
     private String id;
 
     @Column(name = "NAME")
-    private  String name;
+    private String name;
 
     @Column(name = "ADDRESS")
     private String address;
@@ -37,7 +37,7 @@ public class Hospital {
     private List<Patient> patients;
 
     public void addDepartment(Department department) {
-        if(departments == null) {
+        if (departments == null) {
             departments = new ArrayList<>();
         }
         departments.add(department);
