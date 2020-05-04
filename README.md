@@ -99,7 +99,7 @@ To create all tables, paste the following commands on gcloud consequently:
       INTERLEAVE IN PARENT DEPARTMENTS ON DELETE CASCADE;'`   
 ***
 ## Add test data to Spanner
-To create all tables, paste the following commands on gcloud consequently:
+To insert some test data, paste the following commands on gcloud consequently:
 
 `$ gcloud spanner databases execute-sql hospital --instance=testinst --sql="INSERT HOSPITALS (HOSPITAL_ID, ADDRESS, NAME)
                                                                              VALUES ('1', 'Marc', 'Richards'),
