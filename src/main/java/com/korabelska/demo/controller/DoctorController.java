@@ -1,5 +1,6 @@
 package com.korabelska.demo.controller;
 
+import com.korabelska.demo.dto.DoctorDiagnosisDto;
 import com.korabelska.demo.dto.DoctorDto;
 import com.korabelska.demo.exceptions.EntityNotFoundException;
 import com.korabelska.demo.model.Doctor;
@@ -10,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 @RestController
 @RequestMapping("/doctors")
@@ -38,6 +40,16 @@ public class DoctorController {
             return ResponseEntity.notFound().build();
         }
         return ResponseEntity.ok(doctor);
+    }
+
+    @GetMapping("/diagnoses")
+    public ResponseEntity<List<DoctorDiagnosisDto>> joinDoctorsAndDiagnoses() {
+        try {
+            return ResponseEntity.ok(doctorService.joinDoctorsAndDiagnoses());
+        } catch (ExecutionException | InterruptedException e) {
+            e.printStackTrace();
+            return ResponseEntity.badRequest().build();
+        }
     }
 
     @PostMapping(params = {

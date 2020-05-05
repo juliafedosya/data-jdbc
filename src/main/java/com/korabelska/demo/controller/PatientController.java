@@ -5,6 +5,7 @@ import com.korabelska.demo.dto.PatientDto;
 import com.korabelska.demo.exceptions.EntityNotFoundException;
 import com.korabelska.demo.model.Patient;
 import com.korabelska.demo.model.PatientDiagnosis;
+import com.korabelska.demo.service.DoctorService;
 import com.korabelska.demo.service.PatientService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -19,6 +20,8 @@ import java.util.List;
 public class PatientController {
 
     private final PatientService patientService;
+
+    private final DoctorService doctorService;
 
     @GetMapping()
     public ResponseEntity<List<Patient>> getAllPatients() {
